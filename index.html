@@ -1,0 +1,566 @@
+<html lang="ar" dir="rtl">
+<head>
+
+    <meta charset="UTF-8"></meta>
+
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"></meta>
+
+    <title>اختبار إلكتروني</title>
+
+    <style>
+ 
+
+        body { font-family: Arial, sans-serif; }
+
+        .hidden { display: none; }
+
+        #result { margin-top: 20px; }
+
+        #timer { font-size: 20px; color: red; font-weight: bold; } /* زيادة سمك الخط */
+
+        h2 { font-size: 22px; font-weight: bold; color: #000000; } /* تغيير اللون إلى الأسود وزيادة السُمك */
+
+        label { font-size: 18px; font-weight: bold; color: #333333; } /* زيادة سمك الخط وتحسين اللون */
+
+        #timer { font-size: 20px; color: red; }
+
+        h2 { font-size: 22px; }
+
+        label { font-size: 18px; }
+
+        .correct { font-weight: bold; color: red; }
+
+        /* CSS لتحريك الزر */
+
+        #next-button {
+
+            position: absolute; /* يسمح بتحديد الموقع */
+
+            left: 20px; /* المسافة من الجانب الأيسر */
+
+            bottom: 20px; /* المسافة من الأسفل */
+
+            padding: 10px 20px; /* لتعديل حجم الزر */
+
+        }
+
+        #popup {
+
+    position: fixed;
+
+    top: 30%;
+
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    background-color: #fff;
+
+    border: 1px solid #ccc;
+
+    padding: 20px;
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+    z-index: 1000;
+
+    text-align: center;
+
+    display: none;
+
+}
+
+#popup button {
+
+    margin-top: 10px;
+
+    padding: 5px 10px;
+
+    background-color: red;
+
+    color: white;
+
+    border: none;
+
+    cursor: pointer;
+
+}
+
+#popup button:hover {
+
+    background-color: darkred;
+
+}
+
+    </style>
+
+</head>
+
+<body>
+
+    <h2 class="header-one">
+
+        التدريب علي اختبارات الجهاز المركزى
+
+
+   
+
+    </div>
+<div id="login-container">
+
+    <label for="password">أدخل كلمة المرور:</label>
+
+    <input id="password" type="password" />
+
+    <br /><br />
+
+    <label for="duration">حدد مدة الاختبار (بالدقائق):</label>
+
+    <input id="duration" min="1" type="number" value="5" />
+<br /><br />
+    <label for="questionCount">حدد عدد الأسئلة:</label>
+    <input id="questionCount" min="1" max="55" type="number" value="20" />
+<br /><br />
+
+    <button onclick="checkPassword()">دخول</button>
+
+</div>
+
+<div class="hidden" id="quiz">
+
+    <div id="timer">5:00</div>
+
+    <div id="question-info">السؤال 1 من 20</div>
+
+    <form id="quizForm">
+
+        <div id="question-container"></div>
+      <br><br><br>
+
+        <button id="next-button" onclick="nextQuestion()" type="button">التالي</button>
+
+    </form>
+
+</div>
+
+<div class="hidden" id="result"></div>
+
+<div id="popup" class="hidden">
+
+    <p>
+        هذا النموذج خاص بجروب المشتركين ويتم فتحه مجانا في وقت الفجر 
+    </p>
+
+    <button onclick="closePopup()">إغلاق</button>
+
+</div>
+
+<script>
+
+     const questions =[
+   
+ {
+    "question": "أَيُّ الفُنُونِ الشِّعْرِيَّةِ الآتِيَةِ ظَهَرَ وَازْدَهَرَ بِقُوَّةٍ فِي العَصْرِ الأُمَوِيِّ، وَيُمَثِّلُ مَعَارِكَ هِجَائِيَّةً يَرُدُّ فِيهَا شَاعِرٌ عَلَى آخَرَ بِقَصِيدَةٍ عَلَى نَفْسِ الوَزْنِ وَالقَافِيَةِ لِيَهْدِمَ مَعَانِيَهَا؟",
+    "options": [
+      "النقائض",
+      "الملاحم",
+      "الموشحات"
+    ],
+    "answer": "النقائض"
+  },
+  {
+    "question": "الفَنُّ الشِّعْرِيُّ الَّذِي ازْدَهَرَ فِي العَصْرِ الأُمَوِيِّ، وَيَقُومُ عَلَى أَنْ يَنْظِمَ شَاعِرٌ قَصِيدَةً فِي الفَخْرِ وَالهِجَاءِ، فَيَرُدَّ عَلَيْهِ شَاعِرٌ آخَرُ بِقَصِيدَةٍ تَنْقُضُهَا عَلَى (نَفْسِ الوَزْنِ وَالقَافِيَةِ)، يُسَمَّى فَنَّ (النَّقَائِضِ). مَنْ هُمْ أَشْهَرُ شُعَرَاءِ هَذَا الفَنِّ؟",
+    "options": [
+      "امْرُؤُ القَيْسِ وَزُهَيْرٌ وَعَنْتَرَةُ.",
+      "المُتَنَبِّي وَأَبُو تَمَّامٍ وَالبُحْتُرِيُّ",
+      "جَرِيرٌ وَالفَرَزْدَقُ وَالأَخْطَلُ."
+    ],
+    "answer": "جَرِيرٌ وَالفَرَزْدَقُ وَالأَخْطَلُ."
+  },
+  {
+    "question": "ترفع المبتدأ ويسمى اسمها، وتنصب الخبر ويسمى خبرها،ويجب أن يكون خبرها جملة فعلية",
+    "options": [
+      "كاد وأخواتها",
+      "إن وأخواتها",
+      "كان وأخواتها"
+    ],
+    "answer": "كاد وأخواتها"
+  },
+  {
+    "question": "أَيُّ الأَسْمَاءِ الآتِيَةِ (لَا يَجُوزُ) تَصْغِيرُهَا أَبَدًا",
+    "options": [
+      "أسماء الذكور",
+      "أسماء الإناث",
+      "أسماء البلدان",
+      "أسماء الملائكة"
+    ],
+    "answer": "أسماء الملائكة",
+    "explanation": "هناك أسماء يُمنع تصغيرها مطلقاً تعظيماً وتكريماً لشأنها؛ لأن التصغير في أصله يتضمن معاني التقليل"
+  },
+  {
+    "question": "عِنْدَ تَصْغِيرِ كَلِمَةِ (فَتَاة) ، فَإِنَّهَا تُصْبِحُ:",
+    "options": [
+      "فُوَيْتَة",
+      "فُتَيَّة",
+      "فُتَيَات"
+    ],
+    "answer": "فُتَيَّة"
+  },
+  {
+    "question": "تَصْغِيرِ كَلِمَةِ (اسْتَيْقَنَ):",
+    "options": [
+      "أُسَيْتِقِن.",
+      "لَا تُصَغَّرُ؛ لِأَنَّهَا فِعْلٌ."
+    ],
+    "answer": "لَا تُصَغَّرُ؛ لِأَنَّهَا فِعْلٌ.",
+    "explanation": "الأفعال والحروف والأسماء المبنية"
+  },
+  {
+    "question": "يَكْمُنُ الشَّاهِدُ النَّحْوِيُّ فِي قَوْلِ الشَّاعِرِ: (بَنُونَا بَنُو أَبْنَائِنَا...) فِي كَلِمَتَيْ (بَنُونَا، وَبَنُو)، حَيْثُ يُعَدَّانِ:",
+    "options": [
+      "جَمْعَ مُذَكَّرٍ سَالِمًا حُذِفَتْ نُونُهُ لِلْإِضَافَةِ.",
+      "مُلْحَقًا بِجَمْعِ المُذَكَّرِ السَّالِمِ حُذِفَتْ نُونُهُ لِلْإِضَافَةِ"
+    ],
+    "answer": "مُلْحَقًا بِجَمْعِ المُذَكَّرِ السَّالِمِ حُذِفَتْ نُونُهُ لِلْإِضَافَةِ",
+    "explanation": "(الكلمات الملحقة بجمع المذكر السالم للحفظ هي: أولو، بنون، أهلون، سنون، عالمون، عِلِّيُّون، وألفاظ العقود من ٢٠ إلى ٩٠)."
+  },
+  {
+    "question": "مَا الغَرَضُ البَلَاغِيُّ لِأُسْلُوبِ النَّهْيِ فِي قَوْلِ الشَّاعِرِ: (لَا تَنْهَ عَنْ خُلُقٍ وَتَأْتِيَ مِثْلَهُ ... عَارٌ عَلَيْكَ إِذَا فَعَلْتَ عَظِيمُ)؟",
+    "options": [
+      "التوبيخ والتقريع",
+      "الاستفهام.",
+      "التحقير"
+    ],
+    "answer": "التوبيخ والتقريع",
+    "explanation": "هذا البيت الشهير (لأبي الأسود الدُّؤَلي)"
+  },
+  {
+    "question": "طَائِفَةٌ مِنَ الشُّعَرَاءِ فِي العَصْرِ الجَاهِلِيِّ تَمَرَّدُوا عَلَى سُلْطَةِ قَبَائِلِهِمْ فَتَبَرَّأَتْ مِنْهُمْ، وَعَاشُوا فِي الصَّحْرَاءِ، وَاشْتَهَرُوا بِسُرْعَةِ العَدْوِ وَالإِغَارَةِ عَلَى الأَغْنِيَاءِ البُخَلَاءِ لِمُسَاعَدَةِ الفُقَرَاءِ. يُعْرَفُونَ بِـ (الصَّعَالِيكِ)، فَمَنْ أَشْهَرُ شُعَرَاءِ هَذِهِ الطَّائِفَةِ؟",
+    "options": [
+      "جَرِيرٌ وَالفَرَزْدَقُ وَالأَخْطَلُ.",
+      "امْرُؤُ القَيْسِ وَزُهَيْرٌ وَلَبِيدٌ.",
+      "حَسَّانُ بْنُ ثَابِتٍ وَالخَنْسَاءُ.",
+      "الشَّنْفَرَى وَتَأَبَّطَ شَرًّا وَعُرْوَةُ بْنُ الوَرْدِ"
+    ],
+    "answer": "الشَّنْفَرَى وَتَأَبَّطَ شَرًّا وَعُرْوَةُ بْنُ الوَرْدِ"
+  },
+  {
+    "question": "فَنٌّ نَثْرِيٌّ يَعْتَمِدُ عَلَى المُكَاتَبَاتِ الَّتِي تَدُورُ بَيْنَ الأَصْدِقَاءِ وَالأَقَارِبِ لِلتَّعْبِيرِ عَنِ المَشَاعِرِ فِي المُنَاسَبَاتِ المُخْتَلِفَةِ، كَالشَّوْقِ، وَالعِتَابِ، وَالتَّهْنِئَةِ، وَالتَّعْزِيَةِ.",
+    "options": [
+      "الرسائل الديوانية",
+      "الرسائل الإخوانية",
+      "الرسائل الرسمية"
+    ],
+    "answer": "الرسائل الإخوانية"
+  },
+  {
+    "question": "تَأَمَّلْتُ فِي (عَصَافِير) جَمِيلَةٍ ،علامة جر كلمة (عصافير) ،وهل يجوز تنوينها؟",
+    "options": [
+      "الفتحة،ولا يجوز تنوينها",
+      "الياء ،يجوز",
+      "الكسرة،لا يجوز"
+    ],
+    "answer": "الفتحة،ولا يجوز تنوينها",
+    "explanation": "صيغة منتهى الجموع ممنوعة من الصرف"
+  },
+  {
+    "question": "سِرْتُ فِي طَرِيقٍ مُضَاءٍ بـ (مَصَابِيحَ) كَثِيرَةٍ،علامة جر كلمة (مصابيح) ،وهل يجوز تنوينها؟",
+    "options": [
+      "الفتحة،ولا يجوز تنوينها",
+      "الياء ،يجوز",
+      "الكسرة،لا يجوز"
+    ],
+    "answer": "الفتحة،ولا يجوز تنوينها",
+    "explanation": "صيغة منتهى الجموع ممنوعة من الصرف"
+  },
+  {
+    "question": "اِسْتَمْتَعْتُ بِتَغْرِيدِ (عَصَافِير) الحَدِيقَةِ،علامة جر كلمة (عصافير) ؟",
+    "options": [
+      "الفتحة",
+      "الياء",
+      "الكسرة"
+    ],
+    "answer": "الكسرة",
+    "explanation": "لأنها مضافة"
+  },
+  {
+    "question": "قَرَأْتُ عَلَى ضَوْءِ (مَصَابِيح) الغُرْفَةِ ،علامة جر كلمة (مصابيح) ؟",
+    "options": [
+      "الفتحة",
+      "الياء",
+      "الكسرة"
+    ],
+    "answer": "الكسرة",
+    "explanation": "لأنها مضافة"
+  },
+  {
+    "question": "مَصْدَرُ الفِعْلِ الثُّلَاثِيِّ اللَّازِمِ الَّذِي جَاءَ عَلَى وَزْنِ (فَعَلَ) - أَيْ مَفْتُوحُ العَيْنِ يَأْتِي قِيَاسًا عَلَى وَزْنِ ؟",
+    "options": [
+      "فَعْل",
+      "فُعُول",
+      "فَعَالَة"
+    ],
+    "answer": "فُعُول",
+    "explanation": "قعَد =قعود     خَرَجَ =خروج        فَتَحَ=فَتْح"
+  },
+  {
+    "question": "إِذَا حُذِفَ (المُشَبَّهُ بِهِ) مِنْ أُسْلُوبِ الِاسْتِعَارَةِ، وَتُرِكَتْ صِفَةٌ مِنْ صِفَاتِهِ تَدُلُّ عَلَيْهِ، فَإِنَّ نَوْعَ الِاسْتِعَارَةِ يَكُونُ:",
+    "options": [
+      "اِسْتِعَارَةً تَصْرِيحِيَّةً",
+      "اسْتِعَارَةً مَكْنِيَّةً"
+    ],
+    "answer": "اسْتِعَارَةً مَكْنِيَّةً",
+    "explanation": "مثال : (زَأَرَ الجُنْدِيُّ فِي المَعْرَكَةِ) ➔ شَبَّهنا الجندي بـ (أسد)، حذفنا الأسد (المشبه به)، وأبقينا صفة من صفاته وهي (الزئير)."
+  },
+  {
+    "question": "السؤال: التَّشْبِيهُ الَّذِي حُذِفَتْ مِنْهُ (أَدَاةُ التَّشْبِيهِ) مَعَ ذِكْرِ وَجْهِ الشَّبَهِ يُسَمَّى:",
+    "options": [
+      "تَشْبِيهًا بَلِيغًا",
+      "تَشْبِيهًا مُجْمَلًا",
+      "تَشْبِيهًا مُؤَكَّدًا"
+    ],
+    "answer": "تَشْبِيهًا مُؤَكَّدًا",
+    "explanation": "مِثْلَ: (الجُنْدِيُّ أَسَدٌ فِي الشَّجَاعَةِ)"
+  },
+  {
+    "question": "كيف نكتب الهمزة إذا كانت مَفْتُوحَة وَمَا قَبْلَهَا مَكْسُور",
+    "options": [
+      "تكتب على ألف",
+      "تكتب على نبرة",
+      "تكتب على واو"
+    ],
+    "answer": "تكتب على نبرة",
+    "explanation": "فِئَة - مِئَة"
+  },
+  {
+    "question": "المَصْدَرُ الصَّرِيحُ القِيَاسِيُّ الصَّحِيحُ لِلْفِعْلِ الرُّبَاعِيِّ (أَعْطَى) هُوَ",
+    "options": [
+      "تَعْطِيَة",
+      "إِعْطَاء",
+      "عَطَاء"
+    ],
+    "answer": "إِعْطَاء",
+    "explanation": "الفعل الرباعي الذي يأتي على وزن (أَفْعَلَ)، يكون مصدره القياسي على وزن (إِفْعَال)\nأِكْرَمَ ➔ إِكْرَام            أَنْجَزَ ➔ إِنْجَاز"
+  },
+  {
+    "question": "مَا نَوْعُ التَّشْبِيهِ مِنْ حَيْثُ (الحِسُّ وَالعَقْلُ) فِي حَدِيثِ عَائِشَةَ رَضِيَ اللهُ عَنْهَا : «فَكَانَ لَا يَرَى رُؤْيَا إِلَّا جَاءَتْ مِثْلَ فَلَقِ الصَّبْحِ»؟",
+    "options": [
+      "حِسِّيَّانِ",
+      "عَقْلِيٌّ بِحِسِّيٍّ",
+      "حِسِّيٌّ بِعَقْلِيٍّ"
+    ],
+    "answer": "عَقْلِيٌّ بِحِسِّيٍّ"
+  }
+]
+  
+    let currentQuestion = 0;
+
+    let score = 0;
+
+    let timer;
+
+    let timeLeft;
+
+    let userAnswers = [];
+
+ 
+
+    function closePopup() {
+
+        const popup = document.getElementById("popup");
+
+        popup.style.display = "none";
+
+    }
+
+    function showPopup() {
+
+    const popup = document.getElementById("popup");
+
+    popup.style.display = "block";
+
+}
+
+  function checkPassword() {
+    const passwordInput = document.getElementById("password").value;
+    const durationInput = parseInt(document.getElementById("duration").value) || 10;
+    const questionCountInput = parseInt(document.getElementById("questionCount").value) || questions.length; // استرجاع عدد الأسئلة المحدد
+
+    timeLeft = durationInput * 60;
+
+    if (passwordInput === "077") {
+        document.getElementById("login-container").classList.add("hidden");
+        document.getElementById("quiz").classList.remove("hidden");
+        document.getElementById("result").classList.add("hidden");
+
+        // خلط الأسئلة وتحديد العدد المطلوب
+        const shuffledQuestions = [...questions].sort(() => Math.random() - 0.5).slice(0, questionCountInput);
+        questions.length = 0;
+        questions.push(...shuffledQuestions);
+
+        loadQuestion();
+        startTimer();
+    } else {
+        showPopup(); // عرض النافذة المنبثقة في حالة كلمة مرور خاطئة
+    }
+}
+    function loadQuestion() {
+
+        const questionContainer = document.getElementById("question-container");
+
+      questionContainer.innerHTML = `
+    <h2>${questions[currentQuestion].question}</h2>
+    ${questions[currentQuestion].options.map((option) => `
+        <label>
+            <input type="radio" name="option" value="${option}">
+            ${option === questions[currentQuestion].answer ? option : option}  <!-- تم إزالة الفئة .correct هنا -->
+        </label><br>
+    `).join('')}
+`;
+
+        document.getElementById("question-info").textContent = `السؤال ${currentQuestion + 1} من ${questions.length}`;
+
+    }
+
+function removeDiacritics(text) {
+    // إزالة التشكيل باستخدام regex
+    return text.normalize("NFD").replace(/[\u064B-\u0652]/g, "").replace(/\s+/g, " ").trim();
+}
+
+    function nextQuestion() {
+
+        const selectedOption = document.querySelector('input[name="option"]:checked');
+
+        if (selectedOption) {
+
+            const answer = selectedOption.value;
+
+            userAnswers[currentQuestion] = answer;
+
+            if (removeDiacritics(answer) === removeDiacritics(questions[currentQuestion].answer)) {
+
+                score++;
+
+            }
+
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+
+                loadQuestion();
+
+            } else {
+
+                showResult();
+
+            }
+
+        } else {
+
+            alert("يرجى اختيار إجابة.");
+
+        }
+
+    }
+
+    function showResult() {
+
+        clearInterval(timer);
+
+        const resultDiv = document.getElementById("result");
+
+        resultDiv.innerHTML = `<h2>نتيجتك: ${score} من ${questions.length}</h2>`;
+
+        const incorrectAnswers = [];
+
+        const correctAnswers = [];
+
+        const timeoutQuestions = [];
+
+        questions.forEach((q, index) => {
+
+            const userAnswer = userAnswers[index];
+
+            if (userAnswer === undefined) {
+
+                timeoutQuestions.push(q.question);
+
+            } else if (removeDiacritics(userAnswer) === removeDiacritics(q.answer)) {
+
+                correctAnswers.push({ question: q.question, userAnswer: userAnswer });
+
+            } else {
+
+                incorrectAnswers.push({ question: q.question, correctAnswer: q.answer, userAnswer: userAnswer });
+
+            }
+
+        });
+
+        if (correctAnswers.length) {
+
+            resultDiv.innerHTML += `<h3>الإجابات الصحيحة:</h3><ul>${correctAnswers.map(item => `<li style="color: black;">${item.question} - إجابتك: <span style="color: green;">${item.userAnswer}</span></li>`).join('')}</ul>`;
+
+        }
+
+        if (incorrectAnswers.length) {
+
+            resultDiv.innerHTML += `<h3>الإجابات الخاطئة:</h3><ul>${incorrectAnswers.map(item => `<li style="color: black;">${item.question} - إجابتك: <span style="color: red;">${item.userAnswer}</span> - <span style="color: green;">الإجابة الصحيحة: ${item.correctAnswer}</span></li>`).join('')}</ul>`;
+
+        }
+
+        if (timeoutQuestions.length) {
+
+            resultDiv.innerHTML += `<h3>الأسئلة التي لم تجب عليها بسبب انتهاء الوقت:</h3><p>${timeoutQuestions.join(', ')}</p>`;
+
+        }
+
+        resultDiv.classList.remove("hidden");
+
+        document.getElementById("quiz").classList.add("hidden");
+
+    }
+
+    function startTimer() {
+
+        timer = setInterval(() => {
+
+            timeLeft--;
+
+            const minutes = Math.floor(timeLeft / 60);
+
+            const seconds = timeLeft % 60;
+
+            document.getElementById("timer").textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            if (timeLeft <= 0) {
+
+                clearInterval(timer);
+
+                showResult();
+
+            }
+
+        }, 1000);
+
+    }
+
+    // إضافة مستمع حدث "Enter" هنا
+
+    document.getElementById("quizForm").addEventListener("keypress", function(event) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault(); // لمنع السلوك الافتراضي
+
+            nextQuestion(); // الانتقال للسؤال التالي
+
+        }
+
+    });
+
+</script>
+
+</body>
+
+</html>
